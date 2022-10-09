@@ -9,6 +9,7 @@ require "controllers/items.php";
 $router=new Router();
 
 $router->add('/','ItemsController@listar');
+$router->add('/items','ItemsController@listar');
 $router->add('/agregar','ItemsController@agregar');
 $router->add('/registrar','ItemsController@registrar');
 $router->add('/modificar','ItemsController@modificar');
