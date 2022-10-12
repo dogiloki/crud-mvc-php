@@ -1,3 +1,4 @@
+<?php defined('acceso') or die ("Denegado"); ?>
 <?php require("views/template/head.php"); ?>
 
 	<form action="registrar" method="post" id="content-form">

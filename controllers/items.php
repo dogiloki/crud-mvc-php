@@ -16,12 +16,14 @@ class ItemsController{
 	public function listar(){
 		$listado=$this->model->listado();
 		$title="Listado de items";
+		define("acceso",true);
 		require 'views/items/listar.php';
 
 	}
 
 	public function agregar(){
 		$title="Agregar item";
+		define("acceso",true);
 		require 'views/items/agregar.php';
 	}
 
@@ -39,6 +41,7 @@ class ItemsController{
 		$params=[$params['id']];
 		$row=$this->model->obtener($params)[0];
 		$title="Modificar item";
+		define("acceso",true);
 		require 'views/items/modificar.php';
 	}
 
