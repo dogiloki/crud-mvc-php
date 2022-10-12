@@ -13,8 +13,8 @@
 				<td>".$row['id']."</td>
 				<td>".$row['name']."</td>
 				<td>".$row['surname']."</td>
-				<td><a href='modificar?id=".$row['id']."'>Modificar</a></td>
-				<td><a href='eliminar?id=".$row['id']."'>Eliminar</a></td>
+				<td><a href='modificar/".$row['id']."'>Modificar</a></td>
+				<td><a href='eliminar/".$row['id']."'>Eliminar</a></td>
 			</tr>
 		";
 	}

@@ -6,8 +6,10 @@ require 'models/items.php';
 class ItemsController{
 
 	public $model;
+	public $config;
 
 	public function __construct(){
+		$this->config=Config::singleton();
 		$this->model=new ItemsModel();
 	}
 
@@ -29,31 +31,31 @@ class ItemsController{
 			$title="Registrar item";
 			require 'views/error.php';
 		}else{
-			return header("location:./");
+			return header("location:".$this->config->get('index'));
 		}
 	}
 
-	public function modificar(){
-		$params=[$_GET['id']];
+	public function modificar($params){
+		$params=[$params['id']];
 		$row=$this->model->obtener($params)[0];
 		$title="Modificar item";
 		require 'views/items/modificar.php';
 	}
 
-	public function actualizar(){
-		$params=[$_POST['name'],$_POST['surname'],$_GET['id']];
+	public function actualizar($params){
+		$params=[$_POST['name'],$_POST['surname'],$params['id']];
 		if($this->model->actualizar($params)==null){
 			$title="Actualizar item";
 			require 'views/error.php';
 		}else{
-			return header("location:./");
+			return header("location:".$this->config->get('index'));
 		}
 	}
 
-	public function eliminar(){
-		$params=[$_GET['id']];
+	public function eliminar($params){
+		$params=[$params['id']];
 		$this->model->eliminar($params);
-		return header("location:./");
+		return header("location:".$this->config->get('index'));
 	}
 
 }

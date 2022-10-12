@@ -5,30 +5,46 @@ class Router{
 	private $url=[];
 	private $action=[];
 
-	public function add($url,$action=null,$params=[]){
-		$this->url[]='/'.trim($url,'/');
+	public function add($url,$action=null,$index_end=1){
+		$this->url[]=[
+			'url'=>'/'.trim($url,'/'),
+			'index_end'=>$index_end
+		];
 		if($action!=null){
 			$this->action[]=$action;
 		}
 	}
 
 	public function controller(){
-		$url=isset($_GET['url'])?'/'.$_GET['url']:'/';
-		foreach($this->url as $key=>$value){
+		$base_url=isset($_GET['url'])?'/'.$_GET['url']:'/';
+		for($key=0; $key<sizeof($this->url); $key++){
+			$values=$this->url[$key]['url'];
+			$index_end=$this->url[$key]['index_end'];
+			$params_key=array_slice(explode('/',$values),$index_end+1);
+			$value=implode('/',array_slice(explode('/',$values),1,$index_end));
+			$value='/'.trim($value,'/');
+			$params_value=array_slice(explode('/',$base_url),$index_end+1);
+			$url=implode('/',array_slice(explode('/',$base_url),1,$index_end));
+			$url='/'.trim($url,'/');
 			if(preg_match("#^$value$#",$url)){
+				$params=[];
+				for($indice=0; $indice<sizeof($params_key); $indice++){
+					$params[$params_key[$indice]]=$params_value[$indice]??"";
+				}
 				$action=$this->action[$key];
-				$this->action($action);
+				$this->action($action,$params);
+				$key=sizeof($this->url);
 			}
 		}
 	}
 
-	public function action($action){
+	public function action($action,$params){
 		if($action instanceof \Closure){
-			$action();
+			$action($params);
 		}else{
 			$controller=explode('@',$action);
 			$obj=new $controller[0];
-			$obj->{$controller[1]}();
+			$obj->{$controller[1]}($params);
 		}
 	}
 

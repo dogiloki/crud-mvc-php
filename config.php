@@ -7,4 +7,6 @@ $config->set('user','root');
 $config->set('password','');
 $config->set('db','mvc');
 
+$config->set('index',str_replace("\\","/","http://".$_SERVER["HTTP_HOST"]."/crud-mvc-php/"));
+
 ?>
