@@ -1,3 +1,5 @@
+<?php defined('acceso') or die ("Denegado"); ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +9,8 @@
 </head>
 <body>
 	
-	<h1>Error</h1>
+	<h1>No existe el directorio</h1>
+	<a href="<?php echo $this->config->get('index'); ?>">Volver al inicio</a>
 
 </body>
 </html>

@@ -6,12 +6,17 @@ class DB extends PDO{
 
 	private static $instance=null;
 	public static $sql=null;
+
+	// Select
 	public static $column=null;
 	public static $where=null;
 	public static $group=null;
 	public static $order=null;
 	public static $having=null;
 	public static $limit=null;
+
+	// Insert
+	public static $set=null;
 
 	public const SELECT=0;
 	public const INSERT=1;
@@ -29,7 +34,6 @@ class DB extends PDO{
 			try{
 				$connection="mysql:host=".$config->get('host').";dbname=".$config->get('db');
 				self::$instance=new PDO($connection,$config->get('user'),$config->get('password'));
-				//self::$instance=new mysqli($config->get('host'),$config->get('user'),$config->get('password'),$config->get('db'));
 				self::$instance->query('SET NAMES utf8');
 			}catch(PDOException $ex){
 				echo $ex->getMessage();
@@ -40,12 +44,12 @@ class DB extends PDO{
 
 	public static function execute($db,$type=null,$sql,$params=[]){
 		$query=$db->prepare($sql);
-		self::$sql=$sql;
 		$query->execute($params);
+		self::$sql=$sql;
 		return ($type==DB::SELECT)?$query->fetchAll():$query;
 	}
 
-	public static function selectFrom($db,$table,$params=[[]]){
+	public static function selectFrom($db,$table,$params=[]){
 		if(self::$column==null){
 			$columns="*";
 		}else{
@@ -61,25 +65,50 @@ class DB extends PDO{
 		$having=(self::$having==null)?"":"HAVING ".self::$having;
 		$limit=(self::$limit==null)?"":"LIMIT ".self::$limit;
 		$sql="SELECT ".$columns." FROM ".$table." ".$where." ".$group." ".$order." ".$having." ".$limit;
+		$query=$db->prepare($sql);
+		$query->execute($params);
 		self::$sql=$sql;
-		$query=self::execute($db,$sql,$params);
-		return $query->fetch();
+		DB::$column=null;
+		DB::$where=null;
+		DB::$group=null;
+		DB::$order=null;
+		DB::$having=null;
+		DB::$limit=null;
+		return $query->fetchAll();
 	}
 
-	public static function insertInto($db,$table_,$values_=[]){
-		$table=$table_;
+	public static function insertInto($db,$table,$params=[]){
 		$sql="INSERT INTO ".$table." VALUES (";
-		for($a=0; $a<sizeof($values_); $a++){
+		for($a=0; $a<sizeof($params); $a++){
 			$sql.="?,";
 		}
 		$sql=substr($sql,0,-1);
 		$sql.=")";
 		$query=$db->prepare($sql);
-		for($a=0; $a<sizeof($values_); $a++){
-			$query->bindParam(($a+1),$values_[$a],PDO::PARAM_STR);
-		}
+		$query->execute($params);
 		self::$sql=$sql;
-		return $query->execute();
+		return $query;
+	}
+
+	public static function update($db,$table,$params=[]){
+		$where=(self::$where==null)?"":"WHERE ".self::$where;
+		$sql="UPDATE ".$table." SET ".DB::$set." ".$where;
+		DB::$where=null;
+		DB::$set=null;
+		$query=$db->prepare($sql);
+		$query->execute($params);
+		self::$sql=$sql;
+		return $query;
+	}
+
+	public static function delete($db,$table,$params=[]){
+		$where=(self::$where==null)?"":"WHERE ".self::$where;
+		$sql="DELETE FROM ".$table." ".$where;
+		DB::$where=null;
+		$query=$db->prepare($sql);
+		$query->execute($params);
+		self::$sql=$sql;
+		return $query;
 	}
 
 }

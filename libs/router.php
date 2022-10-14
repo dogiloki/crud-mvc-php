@@ -4,6 +4,11 @@ class Router{
 
 	private $url=[];
 	private $action=[];
+	public $config=null;
+
+	public function __construct(){
+		$this->config=Config::singleton();
+	}
 
 	public function add($url,$action=null,$index_end=1){
 		$this->url[]=[
@@ -34,8 +39,11 @@ class Router{
 				$action=$this->action[$key];
 				$this->action($action,$params);
 				$key=sizeof($this->url);
+				return 0;
 			}
 		}
+		define("acceso",true);
+		require 'views/error.php';
 	}
 
 	public function action($action,$params){

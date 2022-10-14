@@ -40,6 +40,9 @@ class ItemsController{
 	public function modificar($params){
 		$params=[$params['id']];
 		$row=$this->model->obtener($params)[0];
+		if($row==null){
+			return header("location:".$this->config->get('index'));
+		}
 		$title="Modificar item";
 		define("acceso",true);
 		require 'views/items/modificar.php';
@@ -48,7 +51,6 @@ class ItemsController{
 	public function actualizar($params){
 		$params=[$_POST['name'],$_POST['surname'],$params['id']];
 		if($this->model->actualizar($params)==null){
-			$title="Actualizar item";
 			require 'views/error.php';
 		}else{
 			return header("location:".$this->config->get('index'));
@@ -57,8 +59,11 @@ class ItemsController{
 
 	public function eliminar($params){
 		$params=[$params['id']];
-		$this->model->eliminar($params);
-		return header("location:".$this->config->get('index'));
+		if($this->model->eliminar($params)==null){
+			require 'views/error.php';
+		}else{
+			return header("location:".$this->config->get('index'));
+		}
 	}
 
 }

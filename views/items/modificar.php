@@ -11,8 +11,8 @@
 <body>
 
 	<form action="<?php echo $this->config->get('index')."actualizar/".$row['id']; ?>" method="post">
-		<input type="text" name="name" value="<?php echo $row['name']; ?>" required><br>
-		<input type="text" name="surname" value="<?php echo $row['surname']; ?>" required><br>
+		Nombre: <input type="text" name="name" value="<?php echo $row['name']; ?>" required><br>
+		Apellido: <input type="text" name="surname" value="<?php echo $row['surname']; ?>" required><br>
 		<a href="<?php echo $this->config->get('index'); ?>">Cancelar</a>
 		<input type="submit" value="Actualizar">
 	</form>
